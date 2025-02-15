@@ -1,0 +1,67 @@
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QGridLayout, QWidget, QHBoxLayout, QVBoxLayout, QLabel
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("QHBoxLayout and QGridLayout Example")
+
+        self.max_places = 50
+        self.places = self.max_places
+
+        # -----Создать основной вертикальный лейаут---------#
+        main_layout = QVBoxLayout()
+
+        # -----Создать QGridLayout---------#
+        places_layout = QGridLayout()
+
+        # -----Создать QHBoxLayout---------#
+        control_layout = QHBoxLayout()
+        self.parking_places = QLabel(" ")
+
+        # ----Создать необходимые виджеты для размещения------#
+        button_places = []
+        for a in range(50):
+            button4 = QPushButton("🚙")
+            button_places.append(button4)
+        for b in range(50):
+            button_places[b].clicked.connect(self.occupied_car)
+        for b in range(0, 50, 4):
+            control_layout.addWidget(button_places[b])
+            places_layout.addWidget(button_places[b], int(b//4), b+1, b+2, b+3, b+4)
+
+        # ----- Добавить виджеты в QGridLayout ---------#
+        places_layout.addWidget(self.parking_places, 0, 1)
+
+        # ----- Добавить виджеты в QHBoxLayout ---------#
+
+        # ----- Добавить лейауты в основной лейаут ---------#
+        main_layout.addLayout(control_layout)
+        main_layout.addLayout(places_layout)
+
+        # ----- Добавить основной лейаут в окно ---------#
+        container = QWidget()
+        container.setLayout(main_layout)
+        self.setCentralWidget(container)
+
+    def get_places(self):
+        self.parking_places.setText(str(self.places))
+
+    def occupied_car(self):
+        obj = self.sender()
+        if obj.text() == "🚙":
+            obj.setText("X")
+        elif obj.text() == "X":
+            obj.setText("🚙")
+
+
+
+    def away_car(self):
+        if self.places < self.max_places:
+            self.places += 1
+        self.get_places()
+
+app = QApplication([])
+window = MainWindow()
+window.show()
+app.exec()
